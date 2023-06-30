@@ -24,11 +24,6 @@
         {{min}}
       </div></div>
     </v-card>
-    <v-card-actions>
-      <v-btn variant="outlined">
-        Button
-      </v-btn>
-    </v-card-actions>
   </v-card>
 </template>
 <script>

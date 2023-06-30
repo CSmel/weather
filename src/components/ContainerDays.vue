@@ -1,51 +1,37 @@
 <template>
-  <v-container>
-    <v-card-actions>
-      <v-btn @click="convertDay()">convert</v-btn>
- <div v-for="i in daysList" :key="i">
-  <v-btn :class="activeDay(i)"><label><input type="radio" v-model="selectedCategory"  :value="i.value" /> {{i.string}}</label></v-btn><br>
+  <v-container class="mb-6">
+    <v-card-actions class="d-flex justify-center mb-6 bg-surface-variant">
+
+ <div  v-for="i in daysList" :key="i" >
+  <div :class="today(i)">Today</div>
+  <v-btn :class="activeDay(i)"><label><input type="radio" style="display: none;" v-model="selectedCategory"  :value="i.value" /> {{i.string}}</label></v-btn><br>
  </div>
  
     </v-card-actions>
-   
+   <v-col >
    <v-row>
 
-  <v-card  v-for="item in filteredDays(b)" :key="item.id"
-    class="mx-auto"
+  <v-card v-for="item in filteredDays(b)" :key="item.id" 
+    class="px-10"
     max-width="344"
     variant="outlined"
-  >    <v-card-actions>
-
-
-    </v-card-actions>
+  >    
     <v-card v-if="show" :val="item.main.temp_max">
       <div>
         <div class="text-overline mb-1">
-      *{{item.dt_txt}}*
-       {{item.weather[0].icon}}
        {{ item.dt_txt | moment("ddd, h:mm a ") }}
-       {{item.dt }}
 
         </div>
         <div class="text-overline mb-1">
         {{item.main.temp_min}}
-        {{item.main.temp_max}}  <img :src="'https://openweathermap.org/img/wn/'+item.weather[0].icon+'@2x.png'"/>
-        <h1></h1>
+        {{item.main.temp_max}}  <img class="blob" :src="'https://openweathermap.org/img/wn/'+item.weather[0].icon+'@2x.png'"/>
+        
         </div>
-        <div class="text-h1 mb-1">
-      
-        </div>
-        <div lass="text-h2 mb-1">
-      </div> </div>
+ </div>
     </v-card>
-
-   <!---<-card-actions>
-      <v-btn variant="outlined">
-        Button
-      </v-btn>
-    </v-card-actions> -->
   </v-card>
 </v-row>
+</v-col>
 </v-container>
 </template>
 <script>
@@ -79,25 +65,28 @@ export default{
   },computed:{
 
                  activeDay(){
+                  var td = new Date().getDay();
                   return i =>{
-                    if(i.value === 0){
-                      return 'active-class';
+                    if(i.value === td){
+                      return 'active';
                     }
                     else{
                       return 'non-active'}
                   }
-                  
-           
-            //    // var nd = new Date()
-            //    // var cd = this.convertDays(nd)           
-            // if (cd === 1){
-            //    return 'active'
-            //  }
-            //  else{
-            //    return 'active'
-            //  }
+
             
             },
+            today(){
+                  var td = new Date().getDay();
+                  return i =>{
+                    if(i.value === td){
+                      return 'alert';
+                    }
+                    else{
+                      return 'non-day'}
+                  }
+            },
+
   },
 
   methods : {
@@ -108,29 +97,10 @@ export default{
       return cd
 
     },
-        // activeDay(){
-        //       this.daysList.forEach(element =>{
-        //         if(element.value === 0){
-        //           return 'active'
-        //         }
-        //         else{
-        //           return 'active'
-
-        //         }
-        //       })
-            
-
-          
-   
-             
-          
-            
-        //     },
-
 
             filteredDays() {
               var vm = this;
-               var con = '';
+           
               var i ='';
               var u = vm.con;
               var category = vm.selectedCategory;
@@ -138,20 +108,14 @@ export default{
               for (i = 0; i < arr.length; i++){
                 if(category === "All"){
                   return vm.b;
-
                 }
   
                 else if(category === arr[i].value) {
                    return vm.b.filter(function(item) {
                   u = vm.convertDays(item.dt_txt)
                  
-                 if (u === arr[i].value){        
-                       
+                 if (u === arr[i].value){                         
                      return item.dt_txt
-                   }
-
-                   else{
-                     console.log(con)
                    }
                   return item.dt_txt.includes('17');
         });
@@ -159,11 +123,6 @@ export default{
                   }
                 }
     }
- 
-          
-   
-  
-
 
   },
   watch:{},
@@ -196,12 +155,55 @@ export default{
 
 </script>
 <style>
+
   .active {
-    background-color: purple !important;
-  }
-    .non-active {
-    background-color: red !important;
+    background-color: yellow !important;
   }
 
+  .blob {
+   animation: wobble 6s ease infinite;
+}
+.alert{
+  border: 2px solid black;
+  width: 60px;
+}
+.non-day{
+  visibility: hidden;
+}
+
+@keyframes wobble {
+    0%, 100% {
+        -webkit-transform: translateX(0%);
+        transform: translateX(0%);
+        -webkit-transform-origin: 50% 50%;
+        transform-origin: 50% 50%;
+    }
+
+    15% {
+        -webkit-transform: translateX(-32px) rotate(-10deg);
+        transform: translateX(-32px) rotate(-10deg);
+    }
+
+    30% {
+        -webkit-transform: translateX(calc(32px / 2)) rotate(10deg);
+        transform: translateX(calc(32px / 2)) rotate(10deg);
+    }
+
+    45% {
+        -webkit-transform: translateX(calc(-32px / 2)) rotate(calc(-10deg / 1.8));
+        transform: translateX(calc(-32px / 2)) rotate(calc(-10deg / 1.8));
+    }
+
+    60% {
+        -webkit-transform: translateX(calc(32px / 3.3)) rotate(calc(10deg / 3));
+        transform: translateX(calc(32px / 3.3)) rotate(calc(10deg / 3));
+    }
+
+    75% {
+        -webkit-transform: translateX(calc(-32px / 5.5)) rotate(calc(-10deg / 5));
+        transform: translateX(calc(-32px / 5.5)) rotate(calc(-10deg / 5));
+    }
+
+}
 
 </style>
